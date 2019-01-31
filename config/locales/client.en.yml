@@ -23,6 +23,7 @@ en:
         dirty: "You must save the query before running."
     explorer:
       admins_only: "The data explorer is only available to admins."
+      allow_mods: "Allow moderators to view & run this query"
       title: "Data Explorer"
       create: "Create New"
       create_placeholder: "Query name..."

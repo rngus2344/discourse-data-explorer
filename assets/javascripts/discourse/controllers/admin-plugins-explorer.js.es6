@@ -18,6 +18,7 @@ export default Ember.Controller.extend({
   saveDisabled: Ember.computed.not("selectedItem.dirty"),
   runDisabled: Ember.computed.alias("selectedItem.dirty"),
   results: Ember.computed.alias("selectedItem.results"),
+  allowMods: Ember.computed.alias("selectedItem.allow_mods"),
 
   asc: null,
   order: null,
@@ -75,6 +76,14 @@ export default Ember.Controller.extend({
   save() {
     const self = this;
     this.set("loading", true);
+
+    console.log(this.get("allowMods"));
+    console.log(this.get("selectedItem.allow_mods"));
+    // this.send("refreshModel");
+    // the correct values of checkbox are logged to the console while saving
+    // but the db is never updated correctly when value is "false"
+    // even reloading model doesn't help
+
     if (this.get("selectedItem.description") === "")
       this.set("selectedItem.description", "");
     return this.get("selectedItem")

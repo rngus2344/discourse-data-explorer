@@ -18,7 +18,7 @@ const Query = RestModel.extend({
 
   markDirty: function() {
     this.set("dirty", true);
-  }.observes("name", "description", "sql"),
+  }.observes("name", "description", "sql", "allow_mods"),
 
   markNotDirty() {
     this.set("dirty", false);
@@ -72,7 +72,15 @@ const Query = RestModel.extend({
 });
 
 Query.reopenClass({
-  updatePropertyNames: ["name", "description", "sql", "created_by", "created_at", "last_run_at"]
+  updatePropertyNames: [
+    "name",
+    "description",
+    "sql",
+    "created_by",
+    "created_at",
+    "last_run_at",
+    "allow_mods"
+  ]
 });
 
 export default Query;

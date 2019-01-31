@@ -54,6 +54,10 @@
 
             {{! the SQL editor will show the first time you }}
             {{#if everEditing}}
+              <div class="query-mods">
+                {{input type="checkbox" checked=allowMods}}
+                {{i18n "explorer.allow_mods"}}
+              </div>
               <div class="query-editor {{if hideSchema "no-schema"}}">
                 <div class="right-panel">
                   <div class="schema grippie-target">

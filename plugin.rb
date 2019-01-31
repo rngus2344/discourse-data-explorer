@@ -584,7 +584,7 @@ SQL
   # Reimplement a couple ActiveRecord methods, but use PluginStore for storage instead
   require_dependency File.expand_path('../lib/queries.rb', __FILE__)
   class DataExplorer::Query
-    attr_accessor :id, :name, :description, :sql, :created_by, :created_at, :last_run_at
+    attr_accessor :id, :name, :description, :sql, :created_by, :created_at, :last_run_at, :allow_mods
 
     def initialize
       @name = 'Unnamed Query'
@@ -626,7 +626,7 @@ SQL
 
     def self.from_hash(h)
       query = DataExplorer::Query.new
-      [:name, :description, :sql, :created_by, :created_at, :last_run_at].each do |sym|
+      [:name, :description, :sql, :created_by, :created_at, :last_run_at, :allow_mods].each do |sym|
         query.send("#{sym}=", h[sym].strip) if h[sym]
       end
       query.id = h[:id].to_i if h[:id]
@@ -641,7 +641,8 @@ SQL
         sql: @sql,
         created_by: @created_by,
         created_at: @created_at,
-        last_run_at: @last_run_at
+        last_run_at: @last_run_at,
+        allow_mods: @allow_mods
       }
     end
 
@@ -672,6 +673,7 @@ SQL
       @id = query["id"]
       @sql = query["sql"]
       @name = query["name"]
+      @allow_mods = query["allow_mods"]
       @description = query["description"]
 
       DataExplorer.pstore_set "q:#{id}", to_hash
@@ -1011,7 +1013,7 @@ SQL
         end
       end
 
-      [:name, :sql, :description, :created_by, :created_at, :last_run_at].each do |sym|
+      [:name, :sql, :description, :created_by, :created_at, :last_run_at, :allow_mods].each do |sym|
         query.send("#{sym}=", hash[sym]) if hash[sym]
       end
 
@@ -1146,7 +1148,7 @@ SQL
   end
 
   class DataExplorer::QuerySerializer < ActiveModel::Serializer
-    attributes :id, :sql, :name, :description, :param_info, :created_by, :created_at, :username, :last_run_at
+    attributes :id, :sql, :name, :description, :param_info, :created_by, :created_at, :username, :last_run_at, :allow_mods
 
     def param_info
       object.params.map(&:to_hash) rescue nil
@@ -1169,6 +1171,6 @@ SQL
   end
 
   Discourse::Application.routes.append do
-    mount ::DataExplorer::Engine, at: '/admin/plugins/explorer', constraints: AdminConstraint.new
+    mount ::DataExplorer::Engine, at: '/admin/plugins/explorer', constraints: StaffConstraint.new
   end
 end
